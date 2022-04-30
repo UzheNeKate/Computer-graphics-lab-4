@@ -10,21 +10,23 @@ public class BresenhamRasterizer implements Rasterizer {
     public Point2D[] rasterize(Point2D begin, Point2D end) {
         int deltaX = (int) Math.abs(end.getX() - begin.getX());
         int deltaY = (int) Math.abs(end.getY() - begin.getY());
+        boolean flipped = false;
         if (deltaY > deltaX) {
             begin = new Point2D(begin.getY(), begin.getX());
             end = new Point2D(end.getY(), end.getX());
             var tmp = deltaX;
             deltaX = deltaY;
             deltaY = tmp;
+            flipped = true;
         }
 
         int error = deltaX / 2;
         int y = (int) begin.getY();
         int dirY = (int) Math.signum(end.getY() - begin.getY());
 
-        List<Point2D> points = new ArrayList<>();
+        var points = new ArrayList<Point2D>();
         for (int x = (int) begin.getX(); x <= end.getX(); x++) {
-            points.add(new Point2D(x, y));
+            points.add(flipped ? new Point2D(y, x) : new Point2D(x, y));
             error -= deltaY;
             if (error < 0) {
                 y = y + dirY;
